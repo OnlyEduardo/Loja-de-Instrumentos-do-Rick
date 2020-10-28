@@ -200,7 +200,7 @@ public class MainController implements Initializable {
             if (searchableFamily.equals("NONE") || in.matchFamily(searchableFamily)){ score++; }
 
             if(in instanceof WindInstruments){
-                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal) )
+                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal))
                     score++;
             } else if(in instanceof StringInstruments){
                 if(((StringInstruments) in).matchWood(searchableWood)
@@ -226,7 +226,7 @@ public class MainController implements Initializable {
         SelectionModel<Instruments> instrumentsSelectionModel = listView.getSelectionModel();
 
         String message = "Você deseja adicionar o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split("\\.")[0] + "' ao seu carrinho de compras ?";
+                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' ao seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -251,7 +251,7 @@ public class MainController implements Initializable {
         SelectionModel<Instruments> instrumentsSelectionModel = listViewCompras.getSelectionModel();
 
         String message = "Você deseja remover o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split("\\.")[0] + "' do seu carrinho de compras ?";
+                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' do seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
