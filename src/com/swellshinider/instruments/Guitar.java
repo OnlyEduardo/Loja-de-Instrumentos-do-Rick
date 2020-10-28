@@ -20,7 +20,7 @@ public class Guitar extends StringInstruments {
 
     @Override
     public String toString() {
-        return "Guitarra " + tradeMark +
+        return (getInstrumentType().equals(Type.ELECTRIC) ? "Guitarra " : "Violão ") + tradeMark +
                 ", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";

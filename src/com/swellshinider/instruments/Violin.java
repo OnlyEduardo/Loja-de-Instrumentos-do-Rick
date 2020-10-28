@@ -5,9 +5,9 @@ import com.swellshinider.instruments.enumerators.Type;
 import com.swellshinider.instruments.enumerators.Wood;
 import com.swellshinider.instruments.specs.StringInstruments;
 
-public class Mandolin extends StringInstruments {
+public class Violin extends StringInstruments {
 
-    public Mandolin(long serial, float price, TradeMark tradeMark, Wood backWood, Wood topWood, Type instrumentType) {
+    public Violin(long serial, float price, TradeMark tradeMark, Wood backWood, Wood topWood, Type instrumentType) {
         super(serial, price, tradeMark, backWood, topWood, instrumentType);
     }
 
@@ -15,8 +15,8 @@ public class Mandolin extends StringInstruments {
 
     @Override
     public String toString() {
-        return "Mandolin " + tradeMark +
-                "" + (getInstrumentType().equals(Type.ELECTRIC) ? "(Elétrico)" : "") +", " + getStringQuantity() +
+        return "Violino " + tradeMark +
+                ""+ (getInstrumentType().equals(Type.ELECTRIC) ? "(Eletrico)" : "") +", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";
     }
