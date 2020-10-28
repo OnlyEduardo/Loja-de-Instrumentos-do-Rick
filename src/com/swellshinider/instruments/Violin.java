@@ -16,7 +16,7 @@ public class Violin extends StringInstruments {
     @Override
     public String toString() {
         return "Violino " + tradeMark +
-                ""+ (getInstrumentType().equals(Type.ELECTRIC) ? "(Eletrico)" : "") +", " + getStringQuantity() +
+                ""+ (getInstrumentType().equals(Type.Eletrico) ? "(Eletrico)" : "") +", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";
     }

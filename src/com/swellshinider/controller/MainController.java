@@ -1,8 +1,5 @@
 package com.swellshinider.controller;
 
-import com.swellshinider.instruments.Flute;
-import com.swellshinider.instruments.Guitar;
-import com.swellshinider.instruments.Mandolin;
 import com.swellshinider.instruments.enumerators.Metal;
 import com.swellshinider.instruments.enumerators.TradeMark;
 import com.swellshinider.instruments.enumerators.Type;
@@ -66,11 +63,12 @@ public class MainController implements Initializable {
 
     private final BagShop carrinhoDeCompra = new BagShop();
     private boolean haveCupom = false;
+    private final NumberFormat formatter = new DecimalFormat("###,###,###.##");
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        listView.getItems().addAll(Inventory.allInstruments);
         programInfosText.setText(ProgramInfos.ABOUT);
+        listView.getItems().addAll(Inventory.allInstruments);
         createFilters();
     }
 
@@ -104,26 +102,22 @@ public class MainController implements Initializable {
         metalChoiceBox.getItems().add(Metal.NONE);
 
         for(Instruments ins: Inventory.allInstruments){
-            if(ins instanceof Flute){
-                if(Wood.NONE != ((Flute) ins).getWoodPart() &&
-                        !woodChoiceBox.getItems().contains(((Flute) ins).getWoodPart()))
-                    woodChoiceBox.getItems().add(((Flute) ins).getWoodPart());
-                if(Metal.NONE != ((Flute) ins).getMetalPart() &&
-                    !metalChoiceBox.getItems().contains(((Flute) ins).getMetalPart()))
-                    metalChoiceBox.getItems().add(((Flute) ins).getMetalPart());
-            } else if(ins instanceof Guitar){
-                if(!woodChoiceBox.getItems().contains(((Guitar) ins).getTopWood()))
-                    woodChoiceBox.getItems().add(((Guitar) ins).getTopWood());
-                if(!woodChoiceBox.getItems().contains(((Guitar) ins).getBackWood()))
-                    woodChoiceBox.getItems().add(((Guitar) ins).getBackWood());
-
-            } else if(ins instanceof Mandolin) {
-                if(!woodChoiceBox.getItems().contains(((Mandolin) ins).getTopWood()))
-                    woodChoiceBox.getItems().add(((Mandolin) ins).getTopWood());
-                if(!woodChoiceBox.getItems().contains(((Mandolin) ins).getBackWood()))
-                    woodChoiceBox.getItems().add(((Mandolin) ins).getBackWood());
+            // Add wood and metal
+            if(ins instanceof WindInstruments){
+                if(Wood.NONE != ((WindInstruments) ins).getWoodPart() &&
+                        !woodChoiceBox.getItems().contains(((WindInstruments) ins).getWoodPart()))
+                    woodChoiceBox.getItems().add(((WindInstruments) ins).getWoodPart());
+                if(Metal.NONE != ((WindInstruments) ins).getMetalPart() &&
+                    !metalChoiceBox.getItems().contains(((WindInstruments) ins).getMetalPart()))
+                    metalChoiceBox.getItems().add(((WindInstruments) ins).getMetalPart());
+            } else if(ins instanceof StringInstruments){
+                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getTopWood()))
+                    woodChoiceBox.getItems().add(((StringInstruments) ins).getTopWood());
+                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getBackWood()))
+                    woodChoiceBox.getItems().add(((StringInstruments) ins).getBackWood());
             }
 
+            // Add family and trademarks
             if(!tradeMarkChoiceBox.getItems().contains(ins.getTradeMark()))
                 tradeMarkChoiceBox.getItems().add(ins.getTradeMark());
             if(!familyChoiceBox.getItems().contains(ins.getFamily()))
@@ -181,6 +175,7 @@ public class MainController implements Initializable {
         for(Instruments in: Inventory.allInstruments){
             int score = 0;
 
+            // Type search
             if(searchableType.equals(Type.NONE)){
                 score++;
             }
@@ -193,27 +188,34 @@ public class MainController implements Initializable {
                     score++;
             }
 
+            // TradeMark search
             if (searchableTradeMark.equals(TradeMark.NONE) || in.matchTradeMark(searchableTradeMark)){
                 score++;
             }
 
+            // Family search
             if (searchableFamily.equals("NONE") || in.matchFamily(searchableFamily)){ score++; }
 
+            // Wood and Metal search
             if(in instanceof WindInstruments){
-                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal))
+                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal)){
                     score++;
+                }
             } else if(in instanceof StringInstruments){
-                if(((StringInstruments) in).matchWood(searchableWood)
-                        || searchableWood.equals(Wood.NONE))
+                if((((StringInstruments) in).matchWood(searchableWood) || searchableWood.equals(Wood.NONE)) && searchableMetal.equals(Metal.NONE)){
                     score++;
+                }
             } else if(in instanceof PercussionInstruments){
-                if(((PercussionInstruments) in).matchParts(searchableWood, searchableMetal))
+                if((((PercussionInstruments) in).matchParts(searchableWood, searchableMetal) && searchableMetal.equals(Metal.NONE))){
                     score++;
+                }
             }
 
+            // Price search
             if(in.matchValue(minimum, maximum))
                 score++;
 
+            // Valid by score
             if (score == 5)
                 listView.getItems().add(in);
         }
@@ -225,8 +227,10 @@ public class MainController implements Initializable {
 
         SelectionModel<Instruments> instrumentsSelectionModel = listView.getSelectionModel();
 
-        String message = "Você deseja adicionar o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' ao seu carrinho de compras ?";
+        String message = "Você deseja adicionar o instrumento '" +
+                instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
+                "'(R$"+ formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice()) +
+                ") ao seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -251,7 +255,10 @@ public class MainController implements Initializable {
         SelectionModel<Instruments> instrumentsSelectionModel = listViewCompras.getSelectionModel();
 
         String message = "Você deseja remover o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' do seu carrinho de compras ?";
+                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
+                "'(R$" +
+                formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice())+
+                ") do seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -340,13 +347,10 @@ public class MainController implements Initializable {
     }
 
     private void updateSubTotal() {
-        NumberFormat formatter = new DecimalFormat("###,###,###.##");
         subTotalText.setText("Sub total: R$" + formatter.format(carrinhoDeCompra.getTotalPrice()));
     }
 
     private void updateTotal(){
-        NumberFormat formatter = new DecimalFormat("###,###,###.##");
-
         if(!haveCupom)
             totalText.setText("Subtotal: R$" + formatter.format(carrinhoDeCompra.getTotalPrice()));
         else{
