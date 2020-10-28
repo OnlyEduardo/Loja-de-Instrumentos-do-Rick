@@ -5,6 +5,7 @@ import com.swellshinider.instruments.Guitar;
 import com.swellshinider.instruments.Mandolin;
 import com.swellshinider.instruments.enumerators.Metal;
 import com.swellshinider.instruments.enumerators.TradeMark;
+import com.swellshinider.instruments.enumerators.Type;
 import com.swellshinider.instruments.enumerators.Wood;
 import com.swellshinider.instruments.specs.Instruments;
 import com.swellshinider.instruments.specs.PercussionInstruments;
@@ -47,6 +48,7 @@ public class MainController implements Initializable {
     public TextField minPrice;
     public TextField maxPrice;
 
+    public ChoiceBox<Type> typeChoiceBox = new ChoiceBox<>();
     public ChoiceBox<TradeMark> tradeMarkChoiceBox = new ChoiceBox<>();
     public ChoiceBox<String> familyChoiceBox = new ChoiceBox<>();
     public ChoiceBox<Wood> woodChoiceBox = new ChoiceBox<>();
@@ -74,6 +76,10 @@ public class MainController implements Initializable {
 
     private void createFilters() {
         // Set layout and position
+        typeChoiceBox.setLayoutX(441);
+        typeChoiceBox.setLayoutY(66);
+        typeChoiceBox.setPrefSize(100, 25);
+
         tradeMarkChoiceBox.setLayoutX(551);
         tradeMarkChoiceBox.setLayoutY(66);
         tradeMarkChoiceBox.setPrefSize(100, 25);
@@ -91,11 +97,11 @@ public class MainController implements Initializable {
         metalChoiceBox.setPrefSize(100, 25);
 
         // Getting Values
+        typeChoiceBox.getItems().addAll(Type.values());
         tradeMarkChoiceBox.getItems().add(TradeMark.NONE);
         familyChoiceBox.getItems().add("NONE");
         woodChoiceBox.getItems().add(Wood.NONE);
         metalChoiceBox.getItems().add(Metal.NONE);
-
 
         for(Instruments ins: Inventory.allInstruments){
             if(ins instanceof Flute){
@@ -125,11 +131,13 @@ public class MainController implements Initializable {
         }
 
         // add to panel
+        typeChoiceBox.setValue(typeChoiceBox.getItems().get(0));
         tradeMarkChoiceBox.setValue(tradeMarkChoiceBox.getItems().get(0));
         familyChoiceBox.setValue(familyChoiceBox.getItems().get(0));
         woodChoiceBox.setValue(woodChoiceBox.getItems().get(0));
         metalChoiceBox.setValue(metalChoiceBox.getItems().get(0));
 
+        instrumentsPane.getChildren().add(typeChoiceBox);
         instrumentsPane.getChildren().add(tradeMarkChoiceBox);
         instrumentsPane.getChildren().add(familyChoiceBox);
         instrumentsPane.getChildren().add(woodChoiceBox);
@@ -153,12 +161,14 @@ public class MainController implements Initializable {
             maximum = Float.parseFloat(maxPrice.getText());
         } catch (Exception ignored) {}
 
+        Type searchableType = typeChoiceBox.getValue();
         TradeMark searchableTradeMark = tradeMarkChoiceBox.getValue();
         String searchableFamily = familyChoiceBox.getValue();
         Wood searchableWood = woodChoiceBox.getValue();
         Metal searchableMetal = metalChoiceBox.getValue();
 
-        if(searchableTradeMark.equals(TradeMark.NONE) &&
+        if(searchableType.equals(Type.NONE) &&
+                searchableTradeMark.equals(TradeMark.NONE) &&
                 searchableFamily.equals("NONE") &&
                 searchableWood.equals(Wood.NONE) &&
                 searchableMetal.equals(Metal.NONE) &&
@@ -171,13 +181,23 @@ public class MainController implements Initializable {
         for(Instruments in: Inventory.allInstruments){
             int score = 0;
 
-            if (searchableTradeMark.equals(TradeMark.NONE) ||
-                    in.matchTradeMark(searchableTradeMark))
+            if(searchableType.equals(Type.NONE)){
                 score++;
+            }
+            else if(in instanceof PercussionInstruments){
+                if(((PercussionInstruments) in).getInstrumentsType().equals(searchableType))
+                    score++;
+            }
+            else if(in instanceof StringInstruments) {
+                if (((StringInstruments) in).getInstrumentType().equals(searchableType))
+                    score++;
+            }
 
-            if (searchableFamily.equals("NONE") ||
-                    in.matchFamily(searchableFamily))
+            if (searchableTradeMark.equals(TradeMark.NONE) || in.matchTradeMark(searchableTradeMark)){
                 score++;
+            }
+
+            if (searchableFamily.equals("NONE") || in.matchFamily(searchableFamily)){ score++; }
 
             if(in instanceof WindInstruments){
                 if(((WindInstruments)in).matchParts(searchableWood, searchableMetal) )
@@ -194,7 +214,7 @@ public class MainController implements Initializable {
             if(in.matchValue(minimum, maximum))
                 score++;
 
-            if (score == 4)
+            if (score == 5)
                 listView.getItems().add(in);
         }
     }

@@ -72,14 +72,14 @@
    <Pane fx:id="instrumentsPane" layoutX="200.0" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #fff;">
       <children>
          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="993.0" layoutY="66.0" mnemonicParsing="false" onAction="#searchInstruments" prefHeight="25.0" prefWidth="81.0" text="Filtrar" textAlignment="CENTER" />
-         <Text layoutX="391.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Faixa de preço" textAlignment="CENTER" wrappingWidth="100.0">
+         <Text layoutX="244.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Faixa de preço" textAlignment="CENTER" wrappingWidth="100.0">
             <font>
                <Font size="16.0" />
             </font></Text>
-         <TextField fx:id="minPrice" layoutX="378.0" layoutY="66.0" prefHeight="25.0" prefWidth="58.0" promptText="min" />
-         <TextField fx:id="maxPrice" layoutX="441.0" layoutY="66.0" prefHeight="25.0" prefWidth="58.0" promptText="max" />
+         <TextField fx:id="minPrice" layoutX="231.0" layoutY="64.0" prefHeight="25.0" prefWidth="58.0" promptText="min" />
+         <TextField fx:id="maxPrice" layoutX="294.0" layoutY="64.0" prefHeight="25.0" prefWidth="58.0" promptText="max" />
          <ListView fx:id="listView" fixedCellSize="50.0" layoutY="100.0" onMouseClicked="#clickedInInstrument" prefHeight="620.0" prefWidth="1080.0" />
-         <Text layoutX="695.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo">
+         <Text layoutX="695.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Familia">
             <font>
                <Font size="16.0" />
             </font></Text>
@@ -92,6 +92,11 @@
                <Font size="16.0" />
             </font></Text>
          <Text layoutX="579.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Marca">
+            <font>
+               <Font size="16.0" />
+            </font>
+         </Text>
+         <Text layoutX="475.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tipo">
             <font>
                <Font size="16.0" />
             </font>
