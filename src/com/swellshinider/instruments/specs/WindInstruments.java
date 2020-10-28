@@ -15,6 +15,11 @@ public class WindInstruments extends Instruments {
         this.metalPart = metalPart;
     }
 
+    public boolean matchParts(Wood wood, Metal metal){
+        return getWoodPart().equals(wood) || getMetalPart().equals(metal);
+    }
+
+
     public Wood getWoodPart() {
         return woodPart;
     }

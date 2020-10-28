@@ -18,10 +18,6 @@ public class Flute extends WindInstruments {
         return roleQuantity;
     }
 
-    public boolean matchParts(Wood wood, Metal metal){
-        return getWoodPart().equals(wood) || getMetalPart().equals(metal);
-    }
-
     @Override
     public String toString() {
         return "Flauta " + tradeMark + ", " +

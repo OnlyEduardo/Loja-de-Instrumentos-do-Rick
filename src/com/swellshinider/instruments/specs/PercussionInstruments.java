@@ -18,6 +18,15 @@ public class PercussionInstruments extends Instruments {
         this.instrumentsType = instruementsType;
     }
 
+    public boolean matchParts(Wood wood, Metal metal){
+        if(wood.equals(Wood.NONE))
+            wood = getBodyWood();
+        if(metal.equals(Metal.NONE))
+            metal = getMetalPart();
+
+        return getBodyWood().equals(wood) && getMetalPart().equals(metal);
+    }
+
     public Type getInstrumentsType(){
         return instrumentsType;
     }

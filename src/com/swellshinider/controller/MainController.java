@@ -7,7 +7,9 @@ import com.swellshinider.instruments.enumerators.Metal;
 import com.swellshinider.instruments.enumerators.TradeMark;
 import com.swellshinider.instruments.enumerators.Wood;
 import com.swellshinider.instruments.specs.Instruments;
+import com.swellshinider.instruments.specs.PercussionInstruments;
 import com.swellshinider.instruments.specs.StringInstruments;
+import com.swellshinider.instruments.specs.WindInstruments;
 import com.swellshinider.main.store.BagShop;
 import com.swellshinider.main.store.Inventory;
 import com.swellshinider.util.ProgramInfos;
@@ -177,12 +179,15 @@ public class MainController implements Initializable {
                     in.matchFamily(searchableFamily))
                 score++;
 
-            if(in instanceof Flute){
-                if(((Flute)in).matchParts(searchableWood, searchableMetal) )
+            if(in instanceof WindInstruments){
+                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal) )
                     score++;
             } else if(in instanceof StringInstruments){
                 if(((StringInstruments) in).matchWood(searchableWood)
                         || searchableWood.equals(Wood.NONE))
+                    score++;
+            } else if(in instanceof PercussionInstruments){
+                if(((PercussionInstruments) in).matchParts(searchableWood, searchableMetal))
                     score++;
             }
 
