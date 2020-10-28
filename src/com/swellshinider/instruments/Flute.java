@@ -24,8 +24,9 @@ public class Flute extends WindInstruments {
 
     @Override
     public String toString() {
-        return "Flauta " + tradeMark +
-                ". Material: " + (getWoodPart().equals(Wood.NONE) ? getMetalPart() : getWoodPart()) +
-                " (R$"+formatter.format(price)+")";
+        return "Flauta " + tradeMark + ", " +
+                getRoleQuantity() + " buracos, material: " +
+                (getWoodPart().equals(Wood.NONE) ? getMetalPart() : getWoodPart()) +
+                " (R$" + formatter.format(price) + ")";
     }
 }
