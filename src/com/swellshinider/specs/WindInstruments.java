@@ -1,8 +1,8 @@
-package com.swellshinider.instruments.specs;
+package com.swellshinider.specs;
 
-import com.swellshinider.instruments.enumerators.Metal;
-import com.swellshinider.instruments.enumerators.TradeMark;
-import com.swellshinider.instruments.enumerators.Wood;
+import com.swellshinider.enumerators.Metal;
+import com.swellshinider.enumerators.TradeMark;
+import com.swellshinider.enumerators.Wood;
 
 public class WindInstruments extends Instruments {
 

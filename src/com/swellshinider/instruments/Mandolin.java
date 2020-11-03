@@ -1,9 +1,9 @@
 package com.swellshinider.instruments;
 
-import com.swellshinider.instruments.enumerators.TradeMark;
-import com.swellshinider.instruments.enumerators.Type;
-import com.swellshinider.instruments.enumerators.Wood;
-import com.swellshinider.instruments.specs.StringInstruments;
+import com.swellshinider.enumerators.TradeMark;
+import com.swellshinider.enumerators.Type;
+import com.swellshinider.enumerators.Wood;
+import com.swellshinider.specs.StringInstruments;
 
 public class Mandolin extends StringInstruments {
 
@@ -16,7 +16,7 @@ public class Mandolin extends StringInstruments {
     @Override
     public String toString() {
         return "Mandolin " + tradeMark +
-                "" + (getInstrumentType().equals(Type.Eletrico) ? "(Elétrico)" : "") +", " + getStringQuantity() +
+                "" + (getInstrumentType().equals(Type.Electric) ? "(Elétrico)" : "") +", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";
     }

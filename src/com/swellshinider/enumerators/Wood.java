@@ -1,4 +1,4 @@
-package com.swellshinider.instruments.enumerators;
+package com.swellshinider.enumerators;
 
 import java.util.Arrays;
 import java.util.List;

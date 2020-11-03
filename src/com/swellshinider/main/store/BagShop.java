@@ -1,6 +1,6 @@
 package com.swellshinider.main.store;
 
-import com.swellshinider.instruments.specs.Instruments;
+import com.swellshinider.specs.Instruments;
 
 import java.util.ArrayList;
 import java.util.List;
