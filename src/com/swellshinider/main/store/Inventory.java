@@ -9,37 +9,83 @@ import com.swellshinider.instruments.specs.Instruments;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Inventory {
+
+    private static final int instrumentsToGenerate = 200;
+    private static final List<Class<? extends Instruments>> instrumentsType = new ArrayList<>();
+
     public static List<Instruments> allInstruments = new ArrayList<>();
 
     static {
-        // Flautas adicionadas
-        allInstruments.add(new Flute(1L, 350f, TradeMark.Yamaha, Wood.NONE, Metal.Bronze, 7));
-        allInstruments.add(new Flute(2L, 300f,TradeMark.Tagima, Wood.Abeto, Metal.NONE, 6));
-        allInstruments.add(new Flute(3L, 220f, TradeMark.Yamaha, Wood.Ebano, Metal.NONE, 7));
-        allInstruments.add(new Flute(4L, 185.99f,TradeMark.Casio, Wood.Ash, Metal.NONE, 6));
+        populateInstrumentsType();
+        generateInstruments();
+    }
 
-        // Guitarras adicionadas
-        allInstruments.add(new Guitar(5L, 1250f, TradeMark.Stratocaster, Wood.Basswood, Wood.Softwood, Type.Eletrico, 7));
-        allInstruments.add(new Guitar(6L, 845.50f, TradeMark.Yamaha, Wood.Hardwood, Wood.Ash, Type.Acustico, 6));
-        allInstruments.add(new Guitar(7L, 950f, TradeMark.Tagima, Wood.Abeto, Wood.Softwood, Type.Eletrico, 7));
-        allInstruments.add(new Guitar(8L, 650f, TradeMark.Fender, Wood.Jacaranda, Wood.Marfim, Type.Acustico, 6));
+    private static void populateInstrumentsType() {
+        instrumentsType.add(Flute.class);
+        instrumentsType.add(Battery.class);
+        instrumentsType.add(Guitar.class);
+        instrumentsType.add(Mandolin.class);
+        instrumentsType.add(Violin.class);
+    }
 
-        // Mandolins adicionados
-        allInstruments.add(new Mandolin(9L, 500f, TradeMark.Takamine, Wood.Ash, Wood.Marfim, Type.Acustico));
-        allInstruments.add(new Mandolin(10L, 500f, TradeMark.Tagima, Wood.Cedro, Wood.Hardwood, Type.Eletrico));
+    private static void generateInstruments() {
 
-        // Baterias adicionadas
-        allInstruments.add(new Battery(11L, 1600f, TradeMark.Casio, Metal.Silver, Wood.Ebano, Type.Acustico));
-        allInstruments.add(new Battery(12L, 1050f, TradeMark.Yamaha, Metal.Silver, Wood.Basswood, Type.Acustico));
-        allInstruments.add(new Battery(13L, 1420f, TradeMark.Stratocaster, Metal.Silver, Wood.Hardwood, Type.Eletrico));
-        allInstruments.add(new Battery(14L, 1300f, TradeMark.Tagima, Metal.Silver, Wood.Ash, Type.Eletrico));
+        long serial = 1L;
+        float price = generateNewPrice();
 
-        // Violinos adicionados
-        allInstruments.add(new Violin(15L, 1750f, TradeMark.Yamaha, Wood.Softwood, Wood.Jacaranda, Type.Acustico));
-        allInstruments.add(new Violin(16L, 1230f, TradeMark.Stratocaster, Wood.Abeto, Wood.Ebano, Type.Acustico));
-        allInstruments.add(new Violin(17L, 1412f, TradeMark.Tagima, Wood.Marfim, Wood.Ash, Type.Eletrico));
-        allInstruments.add(new Violin(18L, 1120f, TradeMark.Takamine, Wood.Jacaranda, Wood.Ebano, Type.Eletrico));
+        for (int i = 0; i < instrumentsToGenerate; i++) {
+            for(Class<? extends Instruments> insClass: instrumentsType){
+
+                switch (insClass.getSimpleName()){
+                    case "Flute":
+                        {
+                            if(new Random().nextFloat() > 0.5f)
+                                allInstruments.add(new Flute(serial, price, TradeMark.getRandom(),
+                                        Wood.getRandom(), Metal.NONE, 6));
+                            else
+                                allInstruments.add(new Flute(serial, price, TradeMark.getRandom(),
+                                        Wood.NONE, Metal.getRandom(), 7));
+                        }
+                        break;
+                    case "Guitar":
+                        {
+                            allInstruments.add(new Guitar(serial, price, TradeMark.getRandom(),
+                                    Wood.getRandom(), Wood.getRandom(), Type.getRandom(),
+                                    (new Random().nextFloat() >= 0.5f) ? 6 : 7));
+                        }
+                        break;
+                    case "Mandolin":
+                        {
+                            allInstruments.add(new Mandolin(serial, price, TradeMark.getRandom(),
+                                    Wood.getRandom(), Wood.getRandom(), Type.getRandom()));
+                        }
+                        break;
+                    case "Battery":
+                        {
+                            allInstruments.add(new Battery(serial, price, TradeMark.getRandom(),
+                                    Metal.getRandom(), Wood.getRandom(), Type.getRandom()));
+                        }
+                        break;
+                    case "Violin":
+                        {
+                            allInstruments.add(new Violin(serial, price, TradeMark.getRandom(),
+                                    Wood.getRandom(), Wood.getRandom(), Type.getRandom()));
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + insClass.getSimpleName());
+                }
+
+                serial += 1L;
+                price = generateNewPrice();
+            }
+        }
+    }
+
+    private static float generateNewPrice(){
+        return (float)((Math.random() * (5000 - 500)) + 500);
     }
 }

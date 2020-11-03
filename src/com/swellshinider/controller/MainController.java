@@ -27,6 +27,7 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -42,9 +43,12 @@ public class MainController implements Initializable {
     // INSTRUMENTS PANEL
     public ListView<Instruments> listView;
 
+    public Text numberInsDisponiveis;
+
     public TextField minPrice;
     public TextField maxPrice;
 
+    public ChoiceBox<String> orderChoiceBox = new ChoiceBox<>();
     public ChoiceBox<Type> typeChoiceBox = new ChoiceBox<>();
     public ChoiceBox<TradeMark> tradeMarkChoiceBox = new ChoiceBox<>();
     public ChoiceBox<String> familyChoiceBox = new ChoiceBox<>();
@@ -58,22 +62,28 @@ public class MainController implements Initializable {
     public Text subTotalText;
     public TextField cupomBox;
     public Text totalText;
-
     // END SHOP PANEL
 
     private final BagShop carrinhoDeCompra = new BagShop();
     private boolean haveCupom = false;
     private final NumberFormat formatter = new DecimalFormat("###,###,###.##");
+    private Comparator<Instruments> comp = Comparator.comparingLong(Instruments::getSerial);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         programInfosText.setText(ProgramInfos.ABOUT);
         listView.getItems().addAll(Inventory.allInstruments);
+        listView.getItems().sort(comp);
         createFilters();
+        numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
     }
 
     private void createFilters() {
         // Set layout and position
+        orderChoiceBox.setLayoutX(230);
+        orderChoiceBox.setLayoutY(66);
+        orderChoiceBox.setPrefSize(100, 25);
+
         typeChoiceBox.setLayoutX(441);
         typeChoiceBox.setLayoutY(66);
         typeChoiceBox.setPrefSize(100, 25);
@@ -95,6 +105,8 @@ public class MainController implements Initializable {
         metalChoiceBox.setPrefSize(100, 25);
 
         // Getting Values
+        orderChoiceBox.getItems().addAll("NONE", "Maior Preço",
+                "Menor Preço", "Nome", "Familia");
         typeChoiceBox.getItems().addAll(Type.values());
         tradeMarkChoiceBox.getItems().add(TradeMark.NONE);
         familyChoiceBox.getItems().add("NONE");
@@ -125,12 +137,14 @@ public class MainController implements Initializable {
         }
 
         // add to panel
+        orderChoiceBox.setValue(orderChoiceBox.getItems().get(0));
         typeChoiceBox.setValue(typeChoiceBox.getItems().get(0));
         tradeMarkChoiceBox.setValue(tradeMarkChoiceBox.getItems().get(0));
         familyChoiceBox.setValue(familyChoiceBox.getItems().get(0));
         woodChoiceBox.setValue(woodChoiceBox.getItems().get(0));
         metalChoiceBox.setValue(metalChoiceBox.getItems().get(0));
 
+        instrumentsPane.getChildren().add(orderChoiceBox);
         instrumentsPane.getChildren().add(typeChoiceBox);
         instrumentsPane.getChildren().add(tradeMarkChoiceBox);
         instrumentsPane.getChildren().add(familyChoiceBox);
@@ -138,10 +152,7 @@ public class MainController implements Initializable {
         instrumentsPane.getChildren().add(metalChoiceBox);
     }
 
-    public void searchInstruments(ActionEvent actionEvent) {
-        if(!actionEvent.getEventType().equals(ActionEvent.ACTION))
-            return;
-
+    public void searchInstruments() {
         listView.getItems().clear();
 
         float minimum = Float.MIN_VALUE;
@@ -169,6 +180,8 @@ public class MainController implements Initializable {
                 minimum == Float.MIN_VALUE &&
                 maximum == Float.MAX_VALUE) {
             listView.getItems().addAll(Inventory.allInstruments);
+            listView.getItems().sort(comp);
+            numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
             return;
         }
 
@@ -219,6 +232,9 @@ public class MainController implements Initializable {
             if (score == 5)
                 listView.getItems().add(in);
         }
+
+        listView.getItems().sort(comp);
+        numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
     }
 
     public void clickedInInstrument(MouseEvent mouseEvent) {
@@ -242,7 +258,7 @@ public class MainController implements Initializable {
         carrinhoDeCompra.addToCar(instrumentsSelectionModel.getSelectedItem());
         Inventory.allInstruments.remove(instrumentsSelectionModel.getSelectedItem());
         numberInCars.setText(carrinhoDeCompra.getInstrumentsQuantityInList() + "");
-        searchInstruments(new ActionEvent());
+        searchInstruments();
         updateListaCompras();
         updateSubTotal();
         updateTotal();
@@ -270,7 +286,7 @@ public class MainController implements Initializable {
         carrinhoDeCompra.removeToCar(instrumentsSelectionModel.getSelectedItem());
         Inventory.allInstruments.add(instrumentsSelectionModel.getSelectedItem());
         numberInCars.setText(carrinhoDeCompra.getInstrumentsQuantityInList() + "");
-        searchInstruments(new ActionEvent());
+        searchInstruments();
         updateListaCompras();
         updateSubTotal();
         updateTotal();
@@ -293,6 +309,31 @@ public class MainController implements Initializable {
         updateSubTotal();
         updateTotal();
         haveCupom = false;
+    }
+
+    public void ordenButton(ActionEvent actionEvent) {
+        if(!actionEvent.getEventType().equals(ActionEvent.ACTION))
+            return;
+
+        switch (orderChoiceBox.getValue()){
+            case "Maior Preço":
+                comp = Comparator.comparingDouble(Instruments::getPrice).reversed();
+                break;
+            case "Menor Preço":
+                comp = Comparator.comparingDouble(Instruments::getPrice);
+                break;
+            case "Nome":
+                comp = Comparator.comparing(Instruments::toString);
+                break;
+            case "Familia":
+                comp = Comparator.comparing(Instruments::getFamily);
+                break;
+            default:
+                comp = Comparator.comparingLong(Instruments::getSerial);
+                break;
+        }
+
+        searchInstruments();
     }
 
     // Side Panel
