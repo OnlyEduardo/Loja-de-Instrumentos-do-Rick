@@ -28,6 +28,7 @@ public class GeneratorController implements Initializable {
     public void generate() {
         Inventory.instrumentsToGenerate = valueToGenerate;
         Inventory.generateInstruments();
+        MainController.instance.createFilters();
         MainController.instance.searchInstruments();
         Main.instance.setStage(Stages.MAIN_STAGE);
     }

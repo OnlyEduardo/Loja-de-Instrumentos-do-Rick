@@ -1,19 +1,17 @@
-package com.swellshinider.instruments.enumerators;
+package com.swellshinider.enumerators;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public enum TradeMark {
+    NONE,
     Takamine,
     Stratocaster,
     Fender,
     Yamaha,
     Casio,
-    Tagima,
-    NONE
-
+    Tagima
     ;
     private static final List<TradeMark> VALUES = Arrays.asList(Takamine,
             Stratocaster,

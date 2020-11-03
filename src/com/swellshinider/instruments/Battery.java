@@ -1,10 +1,10 @@
 package com.swellshinider.instruments;
 
-import com.swellshinider.instruments.enumerators.Metal;
-import com.swellshinider.instruments.enumerators.TradeMark;
-import com.swellshinider.instruments.enumerators.Type;
-import com.swellshinider.instruments.enumerators.Wood;
-import com.swellshinider.instruments.specs.PercussionInstruments;
+import com.swellshinider.enumerators.Metal;
+import com.swellshinider.enumerators.TradeMark;
+import com.swellshinider.enumerators.Type;
+import com.swellshinider.enumerators.Wood;
+import com.swellshinider.specs.PercussionInstruments;
 
 public class Battery extends PercussionInstruments {
 
@@ -15,7 +15,7 @@ public class Battery extends PercussionInstruments {
     @Override
     public String toString() {
         return "Bateria " + tradeMark +
-                ""+ (getInstrumentsType().equals(Type.Eletrico) ? "(Elétrica)" : "") +", materiais: " + getBodyWood() + " e " + getMetalPart() +
+                ""+ (getInstrumentsType().equals(Type.Electric) ? "(Elétrica)" : "") +", materiais: " + getBodyWood() + " e " + getMetalPart() +
                 " (R$"+formatter.format(price)+")";
     }
 }

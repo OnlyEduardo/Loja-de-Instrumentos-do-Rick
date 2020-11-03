@@ -1,17 +1,28 @@
-package com.swellshinider.instruments.enumerators;
+package com.swellshinider.enumerators;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 public enum Metal {
+    NONE,
     Brass,
     Bronze,
     Silver,
     Gold,
-    NONE
-
     ;
+
+    @Override
+    public String toString() {
+        switch (this){
+            case Brass: return "Latão";
+            case Silver: return "Prata";
+            case Gold: return "Ouro";
+        }
+
+        return super.toString();
+    }
+
     private static final List<Metal> VALUES = Arrays.asList(Brass,
             Bronze,
             Silver,

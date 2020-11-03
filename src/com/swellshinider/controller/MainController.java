@@ -1,13 +1,13 @@
 package com.swellshinider.controller;
 
-import com.swellshinider.instruments.enumerators.Metal;
-import com.swellshinider.instruments.enumerators.TradeMark;
-import com.swellshinider.instruments.enumerators.Type;
-import com.swellshinider.instruments.enumerators.Wood;
-import com.swellshinider.instruments.specs.Instruments;
-import com.swellshinider.instruments.specs.PercussionInstruments;
-import com.swellshinider.instruments.specs.StringInstruments;
-import com.swellshinider.instruments.specs.WindInstruments;
+import com.swellshinider.enumerators.Metal;
+import com.swellshinider.enumerators.TradeMark;
+import com.swellshinider.enumerators.Type;
+import com.swellshinider.enumerators.Wood;
+import com.swellshinider.specs.Instruments;
+import com.swellshinider.specs.PercussionInstruments;
+import com.swellshinider.specs.StringInstruments;
+import com.swellshinider.specs.WindInstruments;
 import com.swellshinider.main.store.BagShop;
 import com.swellshinider.main.store.Inventory;
 import com.swellshinider.util.ProgramInfos;
@@ -27,6 +27,7 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
@@ -78,11 +79,10 @@ public class MainController implements Initializable {
         programInfosText.setText(ProgramInfos.ABOUT);
         listView.getItems().addAll(Inventory.allInstruments);
         listView.getItems().sort(comp);
-        createFilters();
         numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
     }
 
-    private void createFilters() {
+    public void createFilters() {
         // Set layout and position
         orderChoiceBox.setLayoutX(230);
         orderChoiceBox.setLayoutY(66);
@@ -112,33 +112,17 @@ public class MainController implements Initializable {
         orderChoiceBox.getItems().addAll("NONE", "Maior Preço",
                 "Menor Preço", "Nome", "Familia");
         typeChoiceBox.getItems().addAll(Type.values());
-        tradeMarkChoiceBox.getItems().add(TradeMark.NONE);
+        tradeMarkChoiceBox.getItems().addAll(TradeMark.values());
         familyChoiceBox.getItems().add("NONE");
-        woodChoiceBox.getItems().add(Wood.NONE);
-        metalChoiceBox.getItems().add(Metal.NONE);
+        woodChoiceBox.getItems().addAll(Wood.values());
+        metalChoiceBox.getItems().addAll(Metal.values());
 
         for(Instruments ins: Inventory.allInstruments){
-            // Add wood and metal
-            if(ins instanceof WindInstruments){
-                if(Wood.NONE != ((WindInstruments) ins).getWoodPart() &&
-                        !woodChoiceBox.getItems().contains(((WindInstruments) ins).getWoodPart()))
-                    woodChoiceBox.getItems().add(((WindInstruments) ins).getWoodPart());
-                if(Metal.NONE != ((WindInstruments) ins).getMetalPart() &&
-                    !metalChoiceBox.getItems().contains(((WindInstruments) ins).getMetalPart()))
-                    metalChoiceBox.getItems().add(((WindInstruments) ins).getMetalPart());
-            } else if(ins instanceof StringInstruments){
-                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getTopWood()))
-                    woodChoiceBox.getItems().add(((StringInstruments) ins).getTopWood());
-                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getBackWood()))
-                    woodChoiceBox.getItems().add(((StringInstruments) ins).getBackWood());
-            }
-
-            // Add family and trademarks
-            if(!tradeMarkChoiceBox.getItems().contains(ins.getTradeMark()))
-                tradeMarkChoiceBox.getItems().add(ins.getTradeMark());
             if(!familyChoiceBox.getItems().contains(ins.getFamily()))
                 familyChoiceBox.getItems().add(ins.getFamily());
         }
+
+        System.out.println(Arrays.toString(familyChoiceBox.getItems().toArray()));
 
         // add to panel
         orderChoiceBox.setValue(orderChoiceBox.getItems().get(0));

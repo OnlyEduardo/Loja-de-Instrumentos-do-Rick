@@ -1,9 +1,9 @@
 package com.swellshinider.instruments;
 
-import com.swellshinider.instruments.enumerators.TradeMark;
-import com.swellshinider.instruments.enumerators.Type;
-import com.swellshinider.instruments.enumerators.Wood;
-import com.swellshinider.instruments.specs.StringInstruments;
+import com.swellshinider.enumerators.TradeMark;
+import com.swellshinider.enumerators.Type;
+import com.swellshinider.enumerators.Wood;
+import com.swellshinider.specs.StringInstruments;
 
 public class Guitar extends StringInstruments {
 
@@ -20,7 +20,7 @@ public class Guitar extends StringInstruments {
 
     @Override
     public String toString() {
-        return (getInstrumentType().equals(Type.Eletrico) ? "Guitarra " : "Violão ") + tradeMark +
+        return (getInstrumentType().equals(Type.Electric) ? "Guitarra " : "Violão ") + tradeMark +
                 ", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";

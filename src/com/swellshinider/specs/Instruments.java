@@ -1,6 +1,6 @@
-package com.swellshinider.instruments.specs;
+package com.swellshinider.specs;
 
-import com.swellshinider.instruments.enumerators.TradeMark;
+import com.swellshinider.enumerators.TradeMark;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
