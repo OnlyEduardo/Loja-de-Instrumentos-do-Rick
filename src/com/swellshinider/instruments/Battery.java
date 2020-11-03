@@ -15,7 +15,7 @@ public class Battery extends PercussionInstruments {
     @Override
     public String toString() {
         return "Bateria " + tradeMark +
-                ""+ (getInstrumentsType().equals(Type.ELECTRIC) ? "(Elétrica)" : "") +", materiais: " + getBodyWood() + " e " + getMetalPart() +
+                ""+ (getInstrumentsType().equals(Type.Eletrico) ? "(Elétrica)" : "") +", materiais: " + getBodyWood() + " e " + getMetalPart() +
                 " (R$"+formatter.format(price)+")";
     }
 }

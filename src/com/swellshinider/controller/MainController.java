@@ -1,8 +1,5 @@
 package com.swellshinider.controller;
 
-import com.swellshinider.instruments.Flute;
-import com.swellshinider.instruments.Guitar;
-import com.swellshinider.instruments.Mandolin;
 import com.swellshinider.instruments.enumerators.Metal;
 import com.swellshinider.instruments.enumerators.TradeMark;
 import com.swellshinider.instruments.enumerators.Type;
@@ -30,6 +27,7 @@ import java.net.URL;
 import javax.swing.JOptionPane;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -45,9 +43,12 @@ public class MainController implements Initializable {
     // INSTRUMENTS PANEL
     public ListView<Instruments> listView;
 
+    public Text numberInsDisponiveis;
+
     public TextField minPrice;
     public TextField maxPrice;
 
+    public ChoiceBox<String> orderChoiceBox = new ChoiceBox<>();
     public ChoiceBox<Type> typeChoiceBox = new ChoiceBox<>();
     public ChoiceBox<TradeMark> tradeMarkChoiceBox = new ChoiceBox<>();
     public ChoiceBox<String> familyChoiceBox = new ChoiceBox<>();
@@ -61,21 +62,28 @@ public class MainController implements Initializable {
     public Text subTotalText;
     public TextField cupomBox;
     public Text totalText;
-
     // END SHOP PANEL
 
     private final BagShop carrinhoDeCompra = new BagShop();
     private boolean haveCupom = false;
+    private final NumberFormat formatter = new DecimalFormat("###,###,###.##");
+    private Comparator<Instruments> comp = Comparator.comparingLong(Instruments::getSerial);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        listView.getItems().addAll(Inventory.allInstruments);
         programInfosText.setText(ProgramInfos.ABOUT);
+        listView.getItems().addAll(Inventory.allInstruments);
+        listView.getItems().sort(comp);
         createFilters();
+        numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
     }
 
     private void createFilters() {
         // Set layout and position
+        orderChoiceBox.setLayoutX(230);
+        orderChoiceBox.setLayoutY(66);
+        orderChoiceBox.setPrefSize(100, 25);
+
         typeChoiceBox.setLayoutX(441);
         typeChoiceBox.setLayoutY(66);
         typeChoiceBox.setPrefSize(100, 25);
@@ -97,6 +105,8 @@ public class MainController implements Initializable {
         metalChoiceBox.setPrefSize(100, 25);
 
         // Getting Values
+        orderChoiceBox.getItems().addAll("NONE", "Maior Preço",
+                "Menor Preço", "Nome", "Familia");
         typeChoiceBox.getItems().addAll(Type.values());
         tradeMarkChoiceBox.getItems().add(TradeMark.NONE);
         familyChoiceBox.getItems().add("NONE");
@@ -104,26 +114,22 @@ public class MainController implements Initializable {
         metalChoiceBox.getItems().add(Metal.NONE);
 
         for(Instruments ins: Inventory.allInstruments){
-            if(ins instanceof Flute){
-                if(Wood.NONE != ((Flute) ins).getWoodPart() &&
-                        !woodChoiceBox.getItems().contains(((Flute) ins).getWoodPart()))
-                    woodChoiceBox.getItems().add(((Flute) ins).getWoodPart());
-                if(Metal.NONE != ((Flute) ins).getMetalPart() &&
-                    !metalChoiceBox.getItems().contains(((Flute) ins).getMetalPart()))
-                    metalChoiceBox.getItems().add(((Flute) ins).getMetalPart());
-            } else if(ins instanceof Guitar){
-                if(!woodChoiceBox.getItems().contains(((Guitar) ins).getTopWood()))
-                    woodChoiceBox.getItems().add(((Guitar) ins).getTopWood());
-                if(!woodChoiceBox.getItems().contains(((Guitar) ins).getBackWood()))
-                    woodChoiceBox.getItems().add(((Guitar) ins).getBackWood());
-
-            } else if(ins instanceof Mandolin) {
-                if(!woodChoiceBox.getItems().contains(((Mandolin) ins).getTopWood()))
-                    woodChoiceBox.getItems().add(((Mandolin) ins).getTopWood());
-                if(!woodChoiceBox.getItems().contains(((Mandolin) ins).getBackWood()))
-                    woodChoiceBox.getItems().add(((Mandolin) ins).getBackWood());
+            // Add wood and metal
+            if(ins instanceof WindInstruments){
+                if(Wood.NONE != ((WindInstruments) ins).getWoodPart() &&
+                        !woodChoiceBox.getItems().contains(((WindInstruments) ins).getWoodPart()))
+                    woodChoiceBox.getItems().add(((WindInstruments) ins).getWoodPart());
+                if(Metal.NONE != ((WindInstruments) ins).getMetalPart() &&
+                    !metalChoiceBox.getItems().contains(((WindInstruments) ins).getMetalPart()))
+                    metalChoiceBox.getItems().add(((WindInstruments) ins).getMetalPart());
+            } else if(ins instanceof StringInstruments){
+                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getTopWood()))
+                    woodChoiceBox.getItems().add(((StringInstruments) ins).getTopWood());
+                if(!woodChoiceBox.getItems().contains(((StringInstruments) ins).getBackWood()))
+                    woodChoiceBox.getItems().add(((StringInstruments) ins).getBackWood());
             }
 
+            // Add family and trademarks
             if(!tradeMarkChoiceBox.getItems().contains(ins.getTradeMark()))
                 tradeMarkChoiceBox.getItems().add(ins.getTradeMark());
             if(!familyChoiceBox.getItems().contains(ins.getFamily()))
@@ -131,12 +137,14 @@ public class MainController implements Initializable {
         }
 
         // add to panel
+        orderChoiceBox.setValue(orderChoiceBox.getItems().get(0));
         typeChoiceBox.setValue(typeChoiceBox.getItems().get(0));
         tradeMarkChoiceBox.setValue(tradeMarkChoiceBox.getItems().get(0));
         familyChoiceBox.setValue(familyChoiceBox.getItems().get(0));
         woodChoiceBox.setValue(woodChoiceBox.getItems().get(0));
         metalChoiceBox.setValue(metalChoiceBox.getItems().get(0));
 
+        instrumentsPane.getChildren().add(orderChoiceBox);
         instrumentsPane.getChildren().add(typeChoiceBox);
         instrumentsPane.getChildren().add(tradeMarkChoiceBox);
         instrumentsPane.getChildren().add(familyChoiceBox);
@@ -144,10 +152,7 @@ public class MainController implements Initializable {
         instrumentsPane.getChildren().add(metalChoiceBox);
     }
 
-    public void searchInstruments(ActionEvent actionEvent) {
-        if(!actionEvent.getEventType().equals(ActionEvent.ACTION))
-            return;
-
+    public void searchInstruments() {
         listView.getItems().clear();
 
         float minimum = Float.MIN_VALUE;
@@ -175,12 +180,15 @@ public class MainController implements Initializable {
                 minimum == Float.MIN_VALUE &&
                 maximum == Float.MAX_VALUE) {
             listView.getItems().addAll(Inventory.allInstruments);
+            listView.getItems().sort(comp);
+            numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
             return;
         }
 
         for(Instruments in: Inventory.allInstruments){
             int score = 0;
 
+            // Type search
             if(searchableType.equals(Type.NONE)){
                 score++;
             }
@@ -193,30 +201,40 @@ public class MainController implements Initializable {
                     score++;
             }
 
+            // TradeMark search
             if (searchableTradeMark.equals(TradeMark.NONE) || in.matchTradeMark(searchableTradeMark)){
                 score++;
             }
 
+            // Family search
             if (searchableFamily.equals("NONE") || in.matchFamily(searchableFamily)){ score++; }
 
+            // Wood and Metal search
             if(in instanceof WindInstruments){
-                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal))
+                if(((WindInstruments)in).matchParts(searchableWood, searchableMetal)){
                     score++;
+                }
             } else if(in instanceof StringInstruments){
-                if(((StringInstruments) in).matchWood(searchableWood)
-                        || searchableWood.equals(Wood.NONE))
+                if((((StringInstruments) in).matchWood(searchableWood) || searchableWood.equals(Wood.NONE)) && searchableMetal.equals(Metal.NONE)){
                     score++;
+                }
             } else if(in instanceof PercussionInstruments){
-                if(((PercussionInstruments) in).matchParts(searchableWood, searchableMetal))
+                if((((PercussionInstruments) in).matchParts(searchableWood, searchableMetal) && searchableMetal.equals(Metal.NONE))){
                     score++;
+                }
             }
 
+            // Price search
             if(in.matchValue(minimum, maximum))
                 score++;
 
+            // Valid by score
             if (score == 5)
                 listView.getItems().add(in);
         }
+
+        listView.getItems().sort(comp);
+        numberInsDisponiveis.setText("Há "+ listView.getItems().size() +" instrumentos disponíveis");
     }
 
     public void clickedInInstrument(MouseEvent mouseEvent) {
@@ -225,8 +243,10 @@ public class MainController implements Initializable {
 
         SelectionModel<Instruments> instrumentsSelectionModel = listView.getSelectionModel();
 
-        String message = "Você deseja adicionar o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' ao seu carrinho de compras ?";
+        String message = "Você deseja adicionar o instrumento '" +
+                instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
+                "'(R$"+ formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice()) +
+                ") ao seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -238,7 +258,7 @@ public class MainController implements Initializable {
         carrinhoDeCompra.addToCar(instrumentsSelectionModel.getSelectedItem());
         Inventory.allInstruments.remove(instrumentsSelectionModel.getSelectedItem());
         numberInCars.setText(carrinhoDeCompra.getInstrumentsQuantityInList() + "");
-        searchInstruments(new ActionEvent());
+        searchInstruments();
         updateListaCompras();
         updateSubTotal();
         updateTotal();
@@ -251,7 +271,10 @@ public class MainController implements Initializable {
         SelectionModel<Instruments> instrumentsSelectionModel = listViewCompras.getSelectionModel();
 
         String message = "Você deseja remover o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] + "' do seu carrinho de compras ?";
+                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
+                "'(R$" +
+                formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice())+
+                ") do seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -263,7 +286,7 @@ public class MainController implements Initializable {
         carrinhoDeCompra.removeToCar(instrumentsSelectionModel.getSelectedItem());
         Inventory.allInstruments.add(instrumentsSelectionModel.getSelectedItem());
         numberInCars.setText(carrinhoDeCompra.getInstrumentsQuantityInList() + "");
-        searchInstruments(new ActionEvent());
+        searchInstruments();
         updateListaCompras();
         updateSubTotal();
         updateTotal();
@@ -286,6 +309,31 @@ public class MainController implements Initializable {
         updateSubTotal();
         updateTotal();
         haveCupom = false;
+    }
+
+    public void ordenButton(ActionEvent actionEvent) {
+        if(!actionEvent.getEventType().equals(ActionEvent.ACTION))
+            return;
+
+        switch (orderChoiceBox.getValue()){
+            case "Maior Preço":
+                comp = Comparator.comparingDouble(Instruments::getPrice).reversed();
+                break;
+            case "Menor Preço":
+                comp = Comparator.comparingDouble(Instruments::getPrice);
+                break;
+            case "Nome":
+                comp = Comparator.comparing(Instruments::toString);
+                break;
+            case "Familia":
+                comp = Comparator.comparing(Instruments::getFamily);
+                break;
+            default:
+                comp = Comparator.comparingLong(Instruments::getSerial);
+                break;
+        }
+
+        searchInstruments();
     }
 
     // Side Panel
@@ -340,13 +388,10 @@ public class MainController implements Initializable {
     }
 
     private void updateSubTotal() {
-        NumberFormat formatter = new DecimalFormat("###,###,###.##");
         subTotalText.setText("Sub total: R$" + formatter.format(carrinhoDeCompra.getTotalPrice()));
     }
 
     private void updateTotal(){
-        NumberFormat formatter = new DecimalFormat("###,###,###.##");
-
         if(!haveCupom)
             totalText.setText("Subtotal: R$" + formatter.format(carrinhoDeCompra.getTotalPrice()));
         else{

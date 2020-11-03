@@ -16,7 +16,7 @@ public class Mandolin extends StringInstruments {
     @Override
     public String toString() {
         return "Mandolin " + tradeMark +
-                "" + (getInstrumentType().equals(Type.ELECTRIC) ? "(Elétrico)" : "") +", " + getStringQuantity() +
+                "" + (getInstrumentType().equals(Type.Eletrico) ? "(Elétrico)" : "") +", " + getStringQuantity() +
                 " cordas, materiais: " + getTopWood() + " e " + getBackWood() +
                 " (R$"+formatter.format(price)+")";
     }
