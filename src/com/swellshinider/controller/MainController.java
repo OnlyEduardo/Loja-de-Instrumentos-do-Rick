@@ -64,6 +64,8 @@ public class MainController implements Initializable {
     public Text totalText;
     // END SHOP PANEL
 
+    public static MainController instance;
+
     private final BagShop carrinhoDeCompra = new BagShop();
     private boolean haveCupom = false;
     private final NumberFormat formatter = new DecimalFormat("###,###,###.##");
@@ -71,6 +73,8 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        instance = this;
+
         programInfosText.setText(ProgramInfos.ABOUT);
         listView.getItems().addAll(Inventory.allInstruments);
         listView.getItems().sort(comp);
@@ -244,9 +248,8 @@ public class MainController implements Initializable {
         SelectionModel<Instruments> instrumentsSelectionModel = listView.getSelectionModel();
 
         String message = "Você deseja adicionar o instrumento '" +
-                instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
-                "'(R$"+ formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice()) +
-                ") ao seu carrinho de compras ?";
+                instrumentsSelectionModel.getSelectedItem().toString() +
+                "' ao seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -270,11 +273,8 @@ public class MainController implements Initializable {
 
         SelectionModel<Instruments> instrumentsSelectionModel = listViewCompras.getSelectionModel();
 
-        String message = "Você deseja remover o instrumento '"
-                + instrumentsSelectionModel.getSelectedItem().toString().split(" ")[0] +
-                "'(R$" +
-                formatter.format(instrumentsSelectionModel.getSelectedItem().getPrice())+
-                ") do seu carrinho de compras ?";
+        String message = "Você deseja remover o instrumento '"+
+                instrumentsSelectionModel.getSelectedItem().toString() +" do seu carrinho de compras ?";
 
         int dialogButton = JOptionPane.showConfirmDialog(null,
                 message,"Confirmação",
@@ -333,6 +333,18 @@ public class MainController implements Initializable {
                 break;
         }
 
+        searchInstruments();
+    }
+
+    public void resetFilter(ActionEvent actionEvent) {
+        if(!actionEvent.getEventType().equals(ActionEvent.ACTION))
+            return;
+
+        typeChoiceBox.setValue(typeChoiceBox.getItems().get(0));
+        tradeMarkChoiceBox.setValue(tradeMarkChoiceBox.getItems().get(0));
+        familyChoiceBox.setValue(familyChoiceBox.getItems().get(0));
+        woodChoiceBox.setValue(woodChoiceBox.getItems().get(0));
+        metalChoiceBox.setValue(metalChoiceBox.getItems().get(0));
         searchInstruments();
     }
 
@@ -399,4 +411,6 @@ public class MainController implements Initializable {
             totalText.setText("Total: R$" + formatter.format(total));
         }
     }
+
+
 }
