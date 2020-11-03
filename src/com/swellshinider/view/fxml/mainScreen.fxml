@@ -115,6 +115,7 @@
       </Text>
       <Text layoutX="230.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ordenar por:" textAlignment="CENTER" wrappingWidth="100.0" />
       <Button layoutX="337.0" layoutY="66.0" mnemonicParsing="false" onAction="#ordenButton" text="Ordenar" />
+      <Button alignment="CENTER" layoutX="974.0" layoutY="1.0" mnemonicParsing="false" onAction="#resetFilter" prefHeight="25.0" prefWidth="100.0" text="Resetar filtro" textAlignment="CENTER" />
    </Pane>
    <Pane fx:id="bagPanel" layoutX="200.0" prefHeight="720.0" prefWidth="1080.0" style="-fx-background-color: #fff;" visible="false">
       <Text layoutX="85.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Seu carrinho:">

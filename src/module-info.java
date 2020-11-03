@@ -6,6 +6,7 @@ module InstrumentsStore {
 
     exports com.swellshinider.main;
     exports com.swellshinider.view;
+    exports com.swellshinider.util;
     exports com.swellshinider.instruments.specs;
     exports com.swellshinider.instruments.enumerators;
 

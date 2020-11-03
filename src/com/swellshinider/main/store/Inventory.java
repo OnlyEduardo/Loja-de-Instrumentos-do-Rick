@@ -13,14 +13,13 @@ import java.util.Random;
 
 public class Inventory {
 
-    private static final int instrumentsToGenerate = 200;
+    public static int instrumentsToGenerate;
     private static final List<Class<? extends Instruments>> instrumentsType = new ArrayList<>();
 
     public static List<Instruments> allInstruments = new ArrayList<>();
 
     static {
         populateInstrumentsType();
-        generateInstruments();
     }
 
     private static void populateInstrumentsType() {
@@ -31,12 +30,12 @@ public class Inventory {
         instrumentsType.add(Violin.class);
     }
 
-    private static void generateInstruments() {
+    public static void generateInstruments() {
 
         long serial = 1L;
         float price = generateNewPrice();
 
-        for (int i = 0; i < instrumentsToGenerate; i++) {
+        for (int i = 0; i < instrumentsToGenerate / instrumentsType.size(); i++) {
             for(Class<? extends Instruments> insClass: instrumentsType){
 
                 switch (insClass.getSimpleName()){
